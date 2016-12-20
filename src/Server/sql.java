@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import obj.chanel;
+import obj.friend;
 
 /**
  *
@@ -146,6 +147,56 @@ public class sql {
         }
     }
 
+    public String user_session_to_id(String session) {
+        String temp = null;
+        try {
+            Connection conn = null;
+            Statement stmt = null;
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            stmt = conn.createStatement();
+
+            ResultSet rs = stmt.executeQuery("SELECT * FROM user where session = '" + session + "'");
+            if (rs.next()) {
+                temp = rs.getString("id");
+            } else {
+                temp = null;
+            }
+
+            stmt.close();
+            conn.close();
+            return temp;
+        } catch (Exception ex) {
+            System.out.println(ex);
+            return temp;
+        }
+    }
+
+    public String user_mail_to_id(String mail) {
+        String temp = null;
+        try {
+            Connection conn = null;
+            Statement stmt = null;
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            stmt = conn.createStatement();
+
+            ResultSet rs = stmt.executeQuery("SELECT * FROM user where mail = '" + mail + "'");
+            if (rs.next()) {
+                temp = rs.getString("id");
+            } else {
+                temp = null;
+            }
+
+            stmt.close();
+            conn.close();
+            return temp;
+        } catch (Exception ex) {
+            System.out.println(ex);
+            return temp;
+        }
+    }
+
     public ArrayList<chanel> listchanel() {
         ArrayList<chanel> temp = new ArrayList<>();
         try {
@@ -158,6 +209,29 @@ public class sql {
             ResultSet rs = stmt.executeQuery("SELECT * FROM chanel");
             while (rs.next()) {
                 chanel cl = new chanel(rs.getString("id"), rs.getString("name"));
+                temp.add(cl);
+            }
+            stmt.close();
+            conn.close();
+            return temp;
+        } catch (Exception ex) {
+            System.out.println(ex);
+            return temp;
+        }
+    }
+
+    public ArrayList<friend> listfriend(String user) {
+        ArrayList<friend> temp = new ArrayList<>();
+        try {
+            Connection conn = null;
+            Statement stmt = null;
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            stmt = conn.createStatement();
+
+            ResultSet rs = stmt.executeQuery("SELECT * FROM friend where f1 = '" + user + "'");
+            while (rs.next()) {
+                friend cl = new friend(rs.getString("r1"), rs.getString("r2"), Integer.parseInt(rs.getString("Status")));
                 temp.add(cl);
             }
             stmt.close();

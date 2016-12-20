@@ -164,18 +164,18 @@ public class ChangePassword extends javax.swing.JDialog {
             if (pass.length >= 3) {
                 if (passString.equals(rpassString)) {
                     send("008-" + client.session + "@" + opassString + "@@@" + passString);
+                    String msg;
+                    try {
+                        msg = in.readUTF();
+                        if ("000".equals(msg.substring(0, 3))) {
+                            JOptionPane.showMessageDialog(this, "Đổi password thành công");
+                        } else if ("401".equals(msg.substring(0, 3))) {
+                            JOptionPane.showMessageDialog(this, "Đổi password ko thành công");
+                        }
+                    } catch (IOException ex) {
+                        Logger.getLogger(ChangePassword.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
-            }
-            String msg;
-            try {
-                msg = in.readUTF();
-                if ("000".equals(msg.substring(0, 3))) {
-                    JOptionPane.showMessageDialog(this, "Đổi password thành công");
-                } else if ("401".equals(msg.substring(0, 3))) {
-                    JOptionPane.showMessageDialog(this, "Đổi password ko thành công");
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(ChangePassword.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_jButton1ActionPerformed

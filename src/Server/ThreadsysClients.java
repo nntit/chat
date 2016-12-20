@@ -44,38 +44,35 @@ public class ThreadsysClients extends Thread {
         while (true) {
             String msg;
             try {
-                
+
                 msg = in.readUTF();
 
-                sys.Log("(<)" + msg);
+                sys.Log("(S<)" + msg);
                 String code = msg.substring(0, 3);
                 String session = msg.substring(4, msg.indexOf("@"));
                 String body = msg.substring(msg.indexOf("@") + 1);
                 String title = msg.substring(0, msg.indexOf("@"));
                 if ("003".equals(code)) {
                     //003 - login = gui mail kiem tra
-                    if ("003".equals(code)) {
-                        sql db = new sql();
-                        if (!db.isMailNull(body)) {
-                            ssql = body;
-                            sysold = code;
-                            send("000-000@");
-                        } else {
-                            send("401-000@");
-                        }
+                    sql db = new sql();
+                    if (!db.isMailNull(body)) {
+                        ssql = body;
+                        sysold = code;
+                        send("000-000@");
+                    } else {
+                        send("401-000@");
                     }
+                } else if ("004".equals(code) && sysold.equals("003")) {
                     //004 - login = gui pass kiem tra
-                    if ("004".equals(code)) {
-                        sql db = new sql();
-                        String temp = db.login(ssql, body);
-                        if (temp != null) {
-                            String ss = db.ruuid();
-                            ssql = "UPDATE user SET session='" + ss + "'WHERE id='" + temp + "'";
-                            db.Update(ssql);
-                            send("000-000@" + ss);
-                        } else {
-                            send("401-000@");
-                        }
+                    sql db = new sql();
+                    String temp = db.login(ssql, body);
+                    if (temp != null) {
+                        String ss = db.ruuid();
+                        ssql = "UPDATE user SET session='" + ss + "'WHERE id='" + temp + "'";
+                        db.Update(ssql);
+                        send("000-000@" + ss);
+                    } else {
+                        send("401-000@");
                     }
                 } else if ("007".equals(code)) {
                     //007 - doi ten
@@ -127,17 +124,45 @@ public class ThreadsysClients extends Thread {
                     } else {
                         send("401-000@");
                     }
-                }else if ("002".equals(code)&& sysold.equals("001")){
+                } else if ("002".equals(code) && sysold.equals("001")) {
                     //002 - tao id = gui pass;
-                        sysold = "";
-                        ssql += body + "','')";
-                        sql db = new sql();
+                    sysold = "";
+                    ssql += body + "','')";
+                    sql db = new sql();
+                    System.err.println(ssql);
+                    if (db.Update(ssql) >= 1) {
+                        send("000-000@");
+                    } else {
+                        send("401-000@");
+                    }
+                } else if ("015".equals(code)) {
+                    //014 - tao chanel;
+                    sysold = "";
+                    sql db = new sql();
+                    ssql = "INSERT INTO chanel VALUES ('" + ruuid() + "','" + body + "','" + db.user_session_to_id(session) + "')";
+                    System.err.println(ssql);
+                    if (db.Update(ssql) >= 1) {
+                        send("000-000@");
+                    } else {
+                        send("401-000@");
+                    }
+                } else if ("016".equals(code)) {
+                    //014 - thêm bạn;
+                    sysold = "";
+                    sql db = new sql();
+                    String f1 = db.user_session_to_id(session);
+                    String f2 = db.user_mail_to_id(body);
+                    if (f2 != null) {
+                        ssql = "INSERT INTO friend VALUES ('" + f1 + "','" + f2 + "',0)";
                         System.err.println(ssql);
                         if (db.Update(ssql) >= 1) {
                             send("000-000@");
                         } else {
                             send("401-000@");
                         }
+                    } else {
+                        send("401-000@");
+                    }
                 }
 
             } catch (IOException ex) {

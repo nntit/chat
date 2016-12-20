@@ -179,17 +179,17 @@ public class Connect extends javax.swing.JDialog {
         client.connect(txt_host.getText(), Integer.parseInt(txt_port.getText()));
         if (isValidEmailAddress(txt_mail.getText())) {
             try {
-                client.send("sys-003@" + txt_mail.getText());
-                String msg = client.in.readUTF();
+                send("003-000@" + txt_mail.getText());
+                String msg = in.readUTF();
                 String title = msg.substring(0, msg.indexOf("@"));
-                if ("sys-000".equals(title)) {
+                if ("000-000".equals(title)) {
                     char[] pass = txt_pass.getPassword();
                     String passString = new String(pass);
-                    client.send("sys-004@" + passString);
-                    msg = client.in.readUTF();
+                    send("004-000@" + passString);
+                    msg = in.readUTF();
                     title = msg.substring(0, msg.indexOf("@"));
                     String body = msg.substring(msg.indexOf("@") + 1);
-                    if ("sys-000".equals(title)) {
+                    if ("000-000".equals(title)) {
                         client.login = true;
                         client.session = body;
                         client.port = Integer.parseInt(txt_port.getText());

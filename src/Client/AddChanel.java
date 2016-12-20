@@ -5,6 +5,14 @@
  */
 package Client;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author nnt12
@@ -14,9 +22,44 @@ public class AddChanel extends javax.swing.JDialog {
     /**
      * Creates new form AddChanel
      */
+    public DataOutputStream out = null;
+    public DataInputStream in = null;
+    public Socket sk = null;
+
     public AddChanel(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        this.client = (Client) parent;
+        connect(client.host, client.port + 1);
+        if ("chanel".equals(client.ischanel)) {
+            jLabel1.setText("Tên chanel muốn tạo");
+            jButton1.setText("tạo");
+        } else {
+            jLabel1.setText("Mail cần thêm");
+            jButton1.setText("thêm");
+        }
+    }
+
+    Client client;
+
+    public void connect(String host, int port) {
+        try {
+            if (sk == null) {
+                sk = new Socket(host, port);
+                in = new DataInputStream(sk.getInputStream());
+                out = new DataOutputStream(sk.getOutputStream());
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void send(String str) {
+        try {
+            out.writeUTF(str);
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -39,6 +82,11 @@ public class AddChanel extends javax.swing.JDialog {
         jLabel1.setText("Tên chanel muốn tạo");
 
         jButton1.setText("Tạo");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("thoát");
 
@@ -77,10 +125,61 @@ public class AddChanel extends javax.swing.JDialog {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        if (client.login == true) {
+            String str = txt_namechanel.getText();
+            if ("chanel".equals(client.ischanel)) {
+                if (str.length() >= 4 && str.length() <= 20 && (str.indexOf("@") < 0) && (str.indexOf("'") < 0) && (str.indexOf("'") < 0)) {
+                    send("015-" + client.session + "@" + str);
+                    String msg;
+                    try {
+                        msg = in.readUTF();
+                        if ("000".equals(msg.substring(0, 3))) {
+                            JOptionPane.showMessageDialog(this, "Tạo thành công");
+                            this.dispose();
+                        } else if ("401".equals(msg.substring(0, 3))) {
+                            JOptionPane.showMessageDialog(this, "Tạo ko thành công");
+                        }
+                    } catch (IOException ex) {
+                        Logger.getLogger(ChangePassword.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Tên chanel lớn hơn 3,\n"
+                            + "nhỏ hơn hoặc bằng 20,\n"
+                            + "không có chứ @,\n"
+                            + "và không có dấu '");
+                }
+            } else if (isValidEmailAddress(str)) {
+                send("016-" + client.session + "@" + str);
+                String msg;
+                try {
+                    msg = in.readUTF();
+                    if ("000".equals(msg.substring(0, 3))) {
+                        JOptionPane.showMessageDialog(this, "Thêm thành công");
+                        this.dispose();
+                    } else if ("401".equals(msg.substring(0, 3))) {
+                        JOptionPane.showMessageDialog(this, "Thêm ko thành công");
+                    }
+                } catch (IOException ex) {
+                    Logger.getLogger(ChangePassword.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Mail không đúng");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Bạn chưa login");
+        }
+
+    }//GEN-LAST:event_jButton1ActionPerformed
+    public boolean isValidEmailAddress(String email) {
+        String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
+        java.util.regex.Matcher m = p.matcher(email);
+        return m.matches();
+    }
     /**
      * @param args the command line arguments
      */
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;

@@ -16,6 +16,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import obj.chanel;
+import obj.friend;
 
 /**
  *
@@ -28,6 +29,7 @@ public class ThreadClients extends Thread {
     private ISend server = null;
     private ILog log = null;
     public String islogin = "";
+    public String ischanel = "";
 
     public ThreadClients(ISend server, Socket sk, ILog log) {
         try {
@@ -57,8 +59,13 @@ public class ThreadClients extends Thread {
                 String title = msg.substring(0, msg.indexOf("@"));
                 if ("sys".equals(msg.substring(0, 3))) {
                     if ("012".equals(code)) {
-                        //islogin = body;
-                    } else if (!islogin.equals("")) {
+                        sql db = new sql();
+                        String id = db.user_session_to_id(body);
+                        if (id != null) {
+                            islogin = id;
+                        }
+                    }
+                    if (!islogin.equals("")) {
                         //005 - yeu cau list user
                         //006 - gui list user
                         if ("005".equals(code)) {
@@ -66,10 +73,9 @@ public class ThreadClients extends Thread {
                             if (!"".equals(listuser)) {
                                 server.SendAll("sys-006@" + listuser);
                             }
-                        }
-                        // 010 - xin list chanel
+                        } // 010 - xin list chanel
                         // 011 - send list chanel
-                        if ("010".equals(code)) {
+                        else if ("010".equals(code)) {
                             String temp = "";
                             ArrayList<chanel> cls = new ArrayList<>();
                             sql db = new sql();
@@ -77,14 +83,33 @@ public class ThreadClients extends Thread {
                             int b = 0;
                             for (chanel cl : cls) {
                                 if (b == 0) {
-                                    temp += cl.getName();
+                                    temp += cl.getName() + "@@" + cl.getId();
                                     b++;
                                 } else {
-                                    temp += "@@@" + cl.getName();
+                                    temp += "@@@" + cl.getName() + "@@" + cl.getId();
                                 }
-                                temp += cl.getName();
                             }
                             send("sys-011@" + temp);
+                        } // 013 - xin list friend
+                        // 014 - send list friend
+                        else if ("013".equals(code)) {
+                            String temp = "";
+                            ArrayList<friend> cls = new ArrayList<>();
+                            sql db = new sql();
+                            cls = db.listfriend(islogin);
+                            int b = 0;
+                            for (friend cl : cls) {
+                                if (b == 0) {
+                                    temp += db.username(cl.getR2()) + "@@" + cl.getR2();
+                                    b++;
+                                } else {
+                                    temp += "@@@" + db.username(cl.getR2()) + "@@" + cl.getR2();
+                                }
+                            }
+                            send("sys-014@" + temp);
+                        } //016 - ischanel;
+                        else if ("016".equals(code)) {
+                            ischanel = body;
                         }
                     }
                 } else if ("msg".equals(msg.substring(0, 3)) && !islogin.equals("")) {

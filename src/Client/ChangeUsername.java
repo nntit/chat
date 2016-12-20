@@ -142,24 +142,23 @@ public class ChangeUsername extends javax.swing.JDialog {
             String str = txt_username.getText();
             if (str.length() >= 4 && str.length() <= 20 && (str.indexOf("@") < 0) && (str.indexOf("'") < 0) && (str.indexOf("'") < 0)) {
                 send("007-" + client.session + "@" + str);
+                String msg;
+                try {
+                    msg = in.readUTF();
+                    if ("000".equals(msg.substring(0, 3))) {
+                        JOptionPane.showMessageDialog(this, "Đổi Username thành công");
+                    } else if ("401".equals(msg.substring(0, 3))) {
+                        JOptionPane.showMessageDialog(this, "Đổi Username ko thành công");
+                    }
+                } catch (IOException ex) {
+                    Logger.getLogger(ChangePassword.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 this.dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Username lớn hơn 3,\n"
                         + "nhỏ hơn hoặc bằng 20,\n"
                         + "không có chứ @,\n"
                         + "và không có dấu '");
-            }
-
-            String msg;
-            try {
-                msg = in.readUTF();
-                if ("000".equals(msg.substring(0, 3))) {
-                    JOptionPane.showMessageDialog(this, "Đổi Username thành công");
-                } else if ("401".equals(msg.substring(0, 3))) {
-                    JOptionPane.showMessageDialog(this, "Đổi Username ko thành công");
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(ChangePassword.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             JOptionPane.showMessageDialog(this, "Bạn chưa login");
