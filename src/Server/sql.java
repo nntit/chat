@@ -229,9 +229,102 @@ public class sql {
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
             stmt = conn.createStatement();
 
-            ResultSet rs = stmt.executeQuery("SELECT * FROM friend where f1 = '" + user + "'");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM friend where f1 = '" + user + "' and Status = 1");
             while (rs.next()) {
-                friend cl = new friend(rs.getString("r1"), rs.getString("r2"), Integer.parseInt(rs.getString("Status")));
+                friend cl = new friend(rs.getString("id"),rs.getString("f1"), rs.getString("f2"), Integer.parseInt(rs.getString("Status")));
+                temp.add(cl);
+            }
+            stmt.close();
+            conn.close();
+            return temp;
+        } catch (Exception ex) {
+            System.out.println(ex);
+            return temp;
+        }
+    }
+
+    public boolean kiemtrafriendNull(String f1, String f2) {
+        boolean temp = false;
+        try {
+            Connection conn = null;
+            Statement stmt = null;
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            stmt = conn.createStatement();
+
+            ResultSet rs = stmt.executeQuery("SELECT * FROM friend where f1 = '" + f1 + "' and f2 = '" + f2 + "'");
+            if (rs.next()) {
+                temp = false;
+            } else {
+                temp = true;
+            }
+
+            stmt.close();
+            conn.close();
+            return temp;
+        } catch (Exception ex) {
+            System.out.println(ex);
+            return temp;
+        }
+    }
+    
+    public int kiemtrafriendToStatus(String f1, String f2) {
+        int temp = -1;
+        try {
+            Connection conn = null;
+            Statement stmt = null;
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            stmt = conn.createStatement();
+
+            ResultSet rs = stmt.executeQuery("SELECT * FROM friend where f1 = '" + f1 + "' and f2 = '" + f2 + "'");
+            if (rs.next()) {
+                temp = Integer.valueOf(rs.getString("Status"));
+            } else {
+            }
+            stmt.close();
+            conn.close();
+            return temp;
+        } catch (Exception ex) {
+            System.out.println(ex);
+            return temp;
+        }
+    }    
+    public String kiemtrafriendToid(String f1, String f2) {
+        String temp = "";
+        try {
+            Connection conn = null;
+            Statement stmt = null;
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            stmt = conn.createStatement();
+
+            ResultSet rs = stmt.executeQuery("SELECT * FROM friend where f1 = '" + f1 + "' and f2 = '" + f2 + "'");
+            if (rs.next()) {
+                temp = rs.getString("id");
+            } else {
+            }
+            stmt.close();
+            conn.close();
+            return temp;
+        } catch (Exception ex) {
+            System.out.println(ex);
+            return temp;
+        }
+    }
+    
+    public ArrayList<friend> listthumoifriend(String user) {
+        ArrayList<friend> temp = new ArrayList<>();
+        try {
+            Connection conn = null;
+            Statement stmt = null;
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            stmt = conn.createStatement();
+
+            ResultSet rs = stmt.executeQuery("SELECT * FROM friend where f2 = '" + user + "' and Status =0");
+            while (rs.next()) {
+                friend cl = new friend(rs.getString("id"),rs.getString("f1"), rs.getString("f2"), Integer.parseInt(rs.getString("Status")));
                 temp.add(cl);
             }
             stmt.close();

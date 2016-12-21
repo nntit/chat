@@ -155,10 +155,14 @@ public class AddChanel extends javax.swing.JDialog {
                 try {
                     msg = in.readUTF();
                     if ("000".equals(msg.substring(0, 3))) {
-                        JOptionPane.showMessageDialog(this, "Thêm thành công");
+                        JOptionPane.showMessageDialog(this, "Gửi thư mời thành công");
                         this.dispose();
                     } else if ("401".equals(msg.substring(0, 3))) {
-                        JOptionPane.showMessageDialog(this, "Thêm ko thành công");
+                        JOptionPane.showMessageDialog(this, "User không tồn tại");
+                    } else if ("402".equals(msg.substring(0, 3))) {
+                        JOptionPane.showMessageDialog(this, "đã kết bạn rồi");
+                    }else if ("403".equals(msg.substring(0, 3))) {
+                        JOptionPane.showMessageDialog(this, "Không được phép tự kỷ");
                     }
                 } catch (IOException ex) {
                     Logger.getLogger(ChangePassword.class.getName()).log(Level.SEVERE, null, ex);

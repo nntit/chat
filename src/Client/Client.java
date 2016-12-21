@@ -47,7 +47,7 @@ public class Client extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jTextField2 = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        txt_msg = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
         li_chanel = new javax.swing.JList<>();
         jLabel2 = new javax.swing.JLabel();
@@ -57,6 +57,7 @@ public class Client extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         txt_list_cl_fr = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -79,11 +80,11 @@ public class Client extends javax.swing.JFrame {
             }
         });
 
-        jTextArea1.setEditable(false);
-        jTextArea1.setColumns(20);
-        jTextArea1.setLineWrap(true);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        txt_msg.setEditable(false);
+        txt_msg.setColumns(20);
+        txt_msg.setLineWrap(true);
+        txt_msg.setRows(5);
+        jScrollPane1.setViewportView(txt_msg);
 
         li_chanel.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
@@ -104,6 +105,11 @@ public class Client extends javax.swing.JFrame {
         });
 
         jButton3.setText("-");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         txt_list_cl_fr.setText("List chanel");
         txt_list_cl_fr.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -115,6 +121,13 @@ public class Client extends javax.swing.JFrame {
 
         jButton4.setText("S");
         jButton4.setToolTipText("Setting");
+
+        jButton5.setText("Clear msg");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         jMenu1.setText("Kết nối");
 
@@ -171,7 +184,10 @@ public class Client extends javax.swing.JFrame {
                         .addComponent(jTextField2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton5)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
@@ -184,7 +200,8 @@ public class Client extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txt_list_cl_fr))
+                    .addComponent(txt_list_cl_fr)
+                    .addComponent(jButton5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1)
@@ -213,19 +230,11 @@ public class Client extends javax.swing.JFrame {
     }
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (login == true) {
-            String message = jTextField2.getText().trim();
-            if (!"".equals(message)) {
-                jTextField2.setText("");
-                send("msg-000@" + message);
-            }
-        } else {
-            jTextArea1.append("Bạn chưa đăng nhập" + "\n");
-            jTextArea1.setCaretPosition(jTextArea1.getDocument().getLength());
-        }
+        sendmsg();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     boolean login;
+    String maillogin = "";
     String session;
     int a = 0;
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
@@ -237,7 +246,7 @@ public class Client extends javax.swing.JFrame {
         } else {
             send("sys-012@" + session);
         }
-
+        this.setTitle(maillogin);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
@@ -252,15 +261,22 @@ public class Client extends javax.swing.JFrame {
 
     private void jTextField2KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField2KeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            if (login == true) {
-                String message = jTextField2.getText().trim();
-                if (!"".equals(message)) {
-                    jTextField2.setText("");
-                    send("msg-000@" + message);
-                }
-            }
+            sendmsg();
         }
     }//GEN-LAST:event_jTextField2KeyReleased
+
+    private void sendmsg() {
+        if (login == true) {
+            String message = jTextField2.getText().trim();
+            if (!"".equals(message)) {
+                jTextField2.setText("");
+                send("msg-000@" + message);
+            }
+        } else {
+            txt_msg.append("Bạn chưa đăng nhập" + "\n");
+            txt_msg.setCaretPosition(txt_msg.getDocument().getLength());
+        }
+    }
 
     public String ischanel = "chanel";
 
@@ -282,26 +298,38 @@ public class Client extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         AddChanel fm = new AddChanel(this, true);
         fm.setVisible(true);
-        if (ischanel == "chanel") {
-            send("msg-010@");
-        } else {
-            send("msg-013@");
-        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private String sys016 = "";
     private void li_chanelValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_li_chanelValueChanged
         int a = li_chanel.getSelectedIndex();
         if (a < 0) {
-            send("sys-016@");
-            return;
-        }
-        try {
-            System.out.println(a);
-            String str = listchanel.get(a);
-            send("sys-016@" + str);
-        } catch (Exception e) {
+            if (!"sys-016@".equals(sys016)) {
+                sys016 = "sys-016@";
+                send("sys-016@");
+            }
+        } else {
+            try {
+                String str = listchanel.get(a);
+                if (!sys016.equals("sys-016@" + str)) {
+                    sys016 = "sys-016@" + str;
+                    send("sys-016@" + str);
+                }
+            } catch (Exception e) {
+            }
         }
     }//GEN-LAST:event_li_chanelValueChanged
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        int dialogResult = JOptionPane.showConfirmDialog(null, "Would You Like to Save your Previous Note First?", "Warning", JOptionPane.YES_NO_OPTION);
+        if (dialogResult == JOptionPane.YES_OPTION) {
+            System.out.println("YES_OPTION");
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        txt_msg.setText("");
+    }//GEN-LAST:event_jButton5ActionPerformed
 
     public void connect(String host, int port) {
         try {
@@ -324,7 +352,8 @@ public class Client extends javax.swing.JFrame {
 
                 send("sys-012@" + session);
 
-                send("sys-005@");
+                send("sys-017@");
+
                 if (ischanel == "chanel") {
                     send("sys-010@");
                 } else {
@@ -340,12 +369,15 @@ public class Client extends javax.swing.JFrame {
                         String body = msg.substring(msg.indexOf("@") + 1);
                         String title = msg.substring(0, msg.indexOf("@"));
                         if ("msg".equals(msg.substring(0, 3))) {
-                            jTextArea1.append(body + "\n");
-                            jTextArea1.setCaretPosition(jTextArea1.getDocument().getLength());
+                            txt_msg.append(body + "\n");
+                            txt_msg.setCaretPosition(txt_msg.getDocument().getLength());
                         } else if ("sys".equals(msg.substring(0, 3))) {
                             if ("500".equals(code)) {
-                                jTextArea1.append("Bạn chưa đăng nhập" + "\n");
-                                jTextArea1.setCaretPosition(jTextArea1.getDocument().getLength());
+                                txt_msg.append("System: Bạn chưa đăng nhập" + "\n");
+                                txt_msg.setCaretPosition(txt_msg.getDocument().getLength());
+                            } else if ("501".equals(code)) {
+                                txt_msg.append("System: Bạn chưa chọn chanel" + "\n");
+                                txt_msg.setCaretPosition(txt_msg.getDocument().getLength());
                             } else if ("006".equals(code)) {
                                 DefaultListModel listModel = new DefaultListModel();
                                 String[] auser = body.split("@@@");
@@ -356,7 +388,6 @@ public class Client extends javax.swing.JFrame {
                                 li_user.setModel(listModel);
                             } else if ("011".equals(code)) {
                                 DefaultListModel listModel = new DefaultListModel();
-                                li_chanel.setModel(listModel);
                                 li_user.setModel(new DefaultListModel());
                                 if (!"".equals(body)) {
                                     String[] auser = body.split("@@@");
@@ -366,11 +397,10 @@ public class Client extends javax.swing.JFrame {
                                         listModel.addElement(ausers[0]);
                                         listchanel.add(ausers[1]);
                                     }
-                                    li_chanel.setModel(listModel);
                                 }
+                                li_chanel.setModel(listModel);
                             } else if ("014".equals(code)) {
                                 DefaultListModel listModel = new DefaultListModel();
-                                li_chanel.setModel(listModel);
                                 li_user.setModel(new DefaultListModel());
                                 if (!"".equals(body)) {
                                     String[] auser = body.split("@@@");
@@ -380,14 +410,22 @@ public class Client extends javax.swing.JFrame {
                                         listModel.addElement(ausers[0]);
                                         listchanel.add(ausers[1]);
                                     }
-                                    li_chanel.setModel(listModel);
+                                }
+                                li_chanel.setModel(listModel);
+                            } else if ("018".equals(code)) {
+                                String[] a = body.split("@@@");
+                                int dialogResult = JOptionPane.showConfirmDialog(null, "Bạn " + a[1] + " muốn kết bạn với bạn.\nBạn có đồng ý không?", "Warning", JOptionPane.YES_NO_OPTION);
+                                if (dialogResult == JOptionPane.YES_OPTION) {
+                                    send("sys-019@" + a[0] + "@@@1");
+                                } else {
+                                    send("sys-019@" + a[0] + "@@@0");
                                 }
                             }
                         }
                     } catch (IOException ex) {
                         Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-                        jTextArea1.append("Mất kết nối server");
-                        jTextArea1.setCaretPosition(jTextArea1.getDocument().getLength());
+                        txt_msg.append("System: Mất kết nối server");
+                        txt_msg.setCaretPosition(txt_msg.getDocument().getLength());
                         break;
                     }
                 }
@@ -435,6 +473,7 @@ public class Client extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
@@ -445,10 +484,10 @@ public class Client extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JList<String> li_chanel;
     private javax.swing.JList<String> li_user;
     private javax.swing.JButton txt_list_cl_fr;
+    private javax.swing.JTextArea txt_msg;
     // End of variables declaration//GEN-END:variables
 }

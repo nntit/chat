@@ -15,7 +15,13 @@ public interface ISend {
 
     public void SendAll(String msg);
 
+    public void SendToChanel(String msg, String to);
+
+    public void SendToUser(String msg, String to);
+    
     public void Remove(ThreadClients tc);
 
     public String ListUserInChanel();
+
+    public String ListUserInChanel(String to);
 }

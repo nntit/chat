@@ -15,6 +15,10 @@ public interface ISys {
 
     public void SendAll(String msg);
 
+    public void SendToChanel(String msg, String to);
+
+    public void SendToUser(String msg, String to);
+
     public String port();
 
     public String ListUserInChanel();

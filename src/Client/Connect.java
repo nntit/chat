@@ -194,6 +194,7 @@ public class Connect extends javax.swing.JDialog {
                         client.session = body;
                         client.port = Integer.parseInt(txt_port.getText());
                         JOptionPane.showMessageDialog(this, "đăng nhập thành công");
+                        client.maillogin = txt_mail.getText().trim();
                         this.dispose();
                     } else {
                         JOptionPane.showMessageDialog(this, "đăng nhập ko thành công");

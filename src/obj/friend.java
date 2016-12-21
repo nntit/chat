@@ -10,14 +10,20 @@ package obj;
  * @author nnt12
  */
 public class friend {
+    private String id;
     private String r1;
     private String r2;
     private int Status;
 
-    public friend(String r1, String r2, int Status) {
+    public friend(String id, String r1, String r2, int Status) {
+        this.id = id;
         this.r1 = r1;
         this.r2 = r2;
         this.Status = Status;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getR1() {
@@ -31,6 +37,5 @@ public class friend {
     public int getStatus() {
         return Status;
     }
-
     
 }

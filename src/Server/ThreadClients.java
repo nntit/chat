@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import obj.chanel;
 import obj.friend;
+import sun.security.pkcs11.Secmod;
 
 /**
  *
@@ -69,9 +70,9 @@ public class ThreadClients extends Thread {
                         //005 - yeu cau list user
                         //006 - gui list user
                         if ("005".equals(code)) {
-                            String listuser = server.ListUserInChanel();
+                            String listuser = server.ListUserInChanel(ischanel);
                             if (!"".equals(listuser)) {
-                                server.SendAll("sys-006@" + listuser);
+                                server.SendToChanel("sys-006@" + listuser, ischanel);
                             }
                         } // 010 - xin list chanel
                         // 011 - send list chanel
@@ -100,22 +101,54 @@ public class ThreadClients extends Thread {
                             int b = 0;
                             for (friend cl : cls) {
                                 if (b == 0) {
-                                    temp += db.username(cl.getR2()) + "@@" + cl.getR2();
+                                    temp += db.username(cl.getR2()) + "@@" + cl.getId();
                                     b++;
                                 } else {
-                                    temp += "@@@" + db.username(cl.getR2()) + "@@" + cl.getR2();
+                                    temp += "@@@" + db.username(cl.getR2()) + "@@" + cl.getId();
                                 }
                             }
                             send("sys-014@" + temp);
                         } //016 - ischanel;
                         else if ("016".equals(code)) {
+                            String old = ischanel;
                             ischanel = body;
+                            String listuser = server.ListUserInChanel(old);
+                            server.SendToChanel("sys-006@" + listuser, old);
+                            String listusernew = server.ListUserInChanel(body);
+                            server.SendToChanel("sys-006@" + listusernew, body);
+                        }// 017 - xin thu moi friend
+                        // 018 - send thu moi friend
+                        else if ("017".equals(code)) {
+                            ArrayList<friend> cls = new ArrayList<>();
+                            sql db = new sql();
+                            cls = db.listthumoifriend(islogin);
+                            for (friend cl : cls) {
+                                String str = cl.getR1() + "@@@" + db.username(cl.getR1());
+                                send("sys-018@" + str);
+                            }
+                        } else if ("019".equals(code)) {
+                            sql db = new sql();
+                            String[] a = body.split("@@@");
+                            if ("1".equals(a[1])) {
+                                db.Update("UPDATE friend SET Status =1 WHERE f1='" + a[0] + "' and f2 ='" + islogin + "'");
+                                if (db.kiemtrafriendToStatus(islogin, a[0]) >= 0) {
+                                    db.Update("UPDATE friend SET Status =1 WHERE f1='" + islogin + "' and f2 ='" + a[0] + "'");
+                                } else {
+                                    db.Update("INSERT INTO friend VALUES ('"+db.kiemtrafriendToid(a[0], islogin)+"','" + islogin + "','" + a[0] + "',1)");
+                                }
+                            } else {
+                                db.Update("DELETE FROM friend WHERE f1='" + a[0] + "' and f2 ='" + islogin + "'");
+                            }
                         }
                     }
                 } else if ("msg".equals(msg.substring(0, 3)) && !islogin.equals("")) {
-                    sql db = new sql();
-                    String name = db.username(islogin);
-                    server.SendAll("msg-" + "000" + "@" + name + ": " + body);
+                    if (!ischanel.equals("")) {
+                        sql db = new sql();
+                        String name = db.username(islogin);
+                        server.SendToChanel("msg-" + "000" + "@" + name + ": " + body, ischanel);
+                    } else {
+                        send("sys-501@");
+                    }
                 } else if ("msg".equals(msg.substring(0, 3)) && islogin.equals("")) {
                     send("sys-500@");
                 }

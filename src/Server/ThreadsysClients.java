@@ -10,9 +10,11 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import obj.friend;
 
 /**
  *
@@ -152,16 +154,25 @@ public class ThreadsysClients extends Thread {
                     sql db = new sql();
                     String f1 = db.user_session_to_id(session);
                     String f2 = db.user_mail_to_id(body);
-                    if (f2 != null) {
-                        ssql = "INSERT INTO friend VALUES ('" + f1 + "','" + f2 + "',0)";
-                        System.err.println(ssql);
-                        if (db.Update(ssql) >= 1) {
-                            send("000-000@");
+                    if (!f1.equals(f2)) {
+                        if (db.kiemtrafriendNull(f1, f2)) {
+                            if (f2 != null) {
+                                ssql = "INSERT INTO friend VALUES ('" + db.ruuid() + "','" + f1 + "','" + f2 + "',0)";
+                                if (db.Update(ssql) >= 1) {
+                                    send("000-000@");
+                                    String str = f1 + "@@@" + db.username(f1);
+                                    sys.SendToUser("sys-018@" + str, f2);
+                                } else {
+                                    send("401-000@");
+                                }
+                            } else {
+                                send("401-000@");
+                            }
                         } else {
-                            send("401-000@");
+                            send("402-000@");
                         }
                     } else {
-                        send("401-000@");
+                        send("403-000@");
                     }
                 }
 
