@@ -12,6 +12,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -116,6 +117,12 @@ public class ThreadClients extends Thread {
                             server.SendToChanel("sys-006@" + listuser, old);
                             String listusernew = server.ListUserInChanel(body);
                             server.SendToChanel("sys-006@" + listusernew, body);
+                            sql db = new sql();
+                            ArrayList<String> as = db.listmsgchuaxem(islogin, ischanel);
+                            for (String a : as) {
+                                send("msg-000@"+a);
+                            }
+                            DaXem(islogin, ischanel);
                         }// 017 - xin thu moi friend
                         // 018 - send thu moi friend
                         else if ("017".equals(code)) {
@@ -134,7 +141,7 @@ public class ThreadClients extends Thread {
                                 if (db.kiemtrafriendToStatus(islogin, a[0]) >= 0) {
                                     db.Update("UPDATE friend SET Status =1 WHERE f1='" + islogin + "' and f2 ='" + a[0] + "'");
                                 } else {
-                                    db.Update("INSERT INTO friend VALUES ('"+db.kiemtrafriendToid(a[0], islogin)+"','" + islogin + "','" + a[0] + "',1)");
+                                    db.Update("INSERT INTO friend VALUES ('" + db.kiemtrafriendToid(a[0], islogin) + "','" + islogin + "','" + a[0] + "',1)");
                                 }
                             } else {
                                 db.Update("DELETE FROM friend WHERE f1='" + a[0] + "' and f2 ='" + islogin + "'");
@@ -143,9 +150,13 @@ public class ThreadClients extends Thread {
                     }
                 } else if ("msg".equals(msg.substring(0, 3)) && !islogin.equals("")) {
                     if (!ischanel.equals("")) {
+                        Date d = new Date();
+                        long timestamp = d.getTime();
                         sql db = new sql();
                         String name = db.username(islogin);
+                        db.Update("INSERT INTO msg VALUES ('" + db.ruuid() + "','" + name + ": " + body + "','" + islogin + "','" + ischanel + "'," + timestamp + ")");
                         server.SendToChanel("msg-" + "000" + "@" + name + ": " + body, ischanel);
+                        DaXem(islogin, ischanel);
                     } else {
                         send("sys-501@");
                     }
@@ -172,6 +183,18 @@ public class ThreadClients extends Thread {
     public String ruuid() {
         UUID uid = UUID.randomUUID();
         return uid.toString();
+    }
+
+    public void DaXem(String user, String chanel) {
+        Date d = new Date();
+        long timestamp = d.getTime();
+        sql db = new sql();
+        int a = db.kiemtramsgold(user, chanel);
+        if (a == 1) {
+            db.Update("UPDATE msgold SET time =" + timestamp + " WHERE user='" + user + "' and chanel ='" + chanel + "'");
+        } else {
+            db.Update("INSERT INTO msgold VALUES ('" + db.ruuid() + "','" + user + "','" + chanel + "'," + timestamp + ")");
+        }
     }
 
     public void send(String msg) {

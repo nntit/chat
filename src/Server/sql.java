@@ -231,7 +231,7 @@ public class sql {
 
             ResultSet rs = stmt.executeQuery("SELECT * FROM friend where f1 = '" + user + "' and Status = 1");
             while (rs.next()) {
-                friend cl = new friend(rs.getString("id"),rs.getString("f1"), rs.getString("f2"), Integer.parseInt(rs.getString("Status")));
+                friend cl = new friend(rs.getString("id"), rs.getString("f1"), rs.getString("f2"), Integer.parseInt(rs.getString("Status")));
                 temp.add(cl);
             }
             stmt.close();
@@ -267,7 +267,7 @@ public class sql {
             return temp;
         }
     }
-    
+
     public int kiemtrafriendToStatus(String f1, String f2) {
         int temp = -1;
         try {
@@ -289,7 +289,8 @@ public class sql {
             System.out.println(ex);
             return temp;
         }
-    }    
+    }
+
     public String kiemtrafriendToid(String f1, String f2) {
         String temp = "";
         try {
@@ -312,7 +313,7 @@ public class sql {
             return temp;
         }
     }
-    
+
     public ArrayList<friend> listthumoifriend(String user) {
         ArrayList<friend> temp = new ArrayList<>();
         try {
@@ -324,7 +325,7 @@ public class sql {
 
             ResultSet rs = stmt.executeQuery("SELECT * FROM friend where f2 = '" + user + "' and Status =0");
             while (rs.next()) {
-                friend cl = new friend(rs.getString("id"),rs.getString("f1"), rs.getString("f2"), Integer.parseInt(rs.getString("Status")));
+                friend cl = new friend(rs.getString("id"), rs.getString("f1"), rs.getString("f2"), Integer.parseInt(rs.getString("Status")));
                 temp.add(cl);
             }
             stmt.close();
@@ -335,6 +336,52 @@ public class sql {
             return temp;
         }
     }
+
+    public int kiemtramsgold(String user, String chanel) {
+        int temp = -1;
+        try {
+            Connection conn = null;
+            Statement stmt = null;
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            stmt = conn.createStatement();
+
+            ResultSet rs = stmt.executeQuery("SELECT * FROM msgold where user = '" + user + "' and chanel = '" + chanel + "'");
+            if (rs.next()) {
+                temp = 1;
+            } else {
+            }
+            stmt.close();
+            conn.close();
+            return temp;
+        } catch (Exception ex) {
+            System.out.println(ex);
+            return temp;
+        }
+    }
+
+    public ArrayList<String> listmsgchuaxem(String user, String chanel) {
+        ArrayList<String> temp = new ArrayList<>();
+        try {
+            Connection conn = null;
+            Statement stmt = null;
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            stmt = conn.createStatement();
+
+            ResultSet rs = stmt.executeQuery("SELECT msg.body FROM msg INNER JOIN msgold ON msg.chanel = msgold.chanel where msgold.user = '"+user+"' and msg.chanel = '"+chanel+"' and msg.time >= msgold.time ORDER BY msg.time ASC");
+            while (rs.next()) {
+                temp.add(rs.getString("body"));
+            }
+            stmt.close();
+            conn.close();
+            return temp;
+        } catch (Exception ex) {
+            System.out.println(ex);
+            return temp;
+        }
+    }
+
     /*
     while(rs.next()){
          //Retrieve by column name

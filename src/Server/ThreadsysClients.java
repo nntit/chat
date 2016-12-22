@@ -11,6 +11,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -129,7 +130,9 @@ public class ThreadsysClients extends Thread {
                 } else if ("002".equals(code) && sysold.equals("001")) {
                     //002 - tao id = gui pass;
                     sysold = "";
-                    ssql += body + "','')";
+                    Date d = new Date();
+                    long timestamp = d.getTime();
+                    ssql += body + "','',0," + timestamp + ")";
                     sql db = new sql();
                     System.err.println(ssql);
                     if (db.Update(ssql) >= 1) {

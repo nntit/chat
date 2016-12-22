@@ -309,22 +309,32 @@ public class Client extends javax.swing.JFrame {
                 send("sys-016@");
             }
         } else {
-            try {
-                String str = listchanel.get(a);
-                if (!sys016.equals("sys-016@" + str)) {
-                    sys016 = "sys-016@" + str;
-                    send("sys-016@" + str);
-                }
-            } catch (Exception e) {
+            String str = listchanel.get(a);
+            if (!sys016.equals("sys-016@" + str)) {
+                sys016 = "sys-016@" + str;
+                txt_msg.setText("");
+                send("sys-016@" + str);
             }
         }
     }//GEN-LAST:event_li_chanelValueChanged
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        int dialogResult = JOptionPane.showConfirmDialog(null, "Would You Like to Save your Previous Note First?", "Warning", JOptionPane.YES_NO_OPTION);
-        if (dialogResult == JOptionPane.YES_OPTION) {
-            System.out.println("YES_OPTION");
+        /*if ("chanel".equals(ischanel)) {
+            int a = li_chanel.getSelectedIndex();
+            if (a < 0) {
+            } else {
+                int dialogResult = JOptionPane.showConfirmDialog(null, "Bạn có muốn xóa kênh này không", "Warning", JOptionPane.YES_NO_OPTION);
+                if (dialogResult == JOptionPane.YES_OPTION) {
+                    System.out.println("YES_OPTION");
+                }
+            }
+        } else {
         }
+        if (ischanel == "chanel") {
+            send("sys-010@");
+        } else {
+            send("sys-013@");
+        }*/
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
