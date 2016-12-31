@@ -31,7 +31,7 @@ public class ChangeUsername extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.client = (Client) parent;
-        connect(client.host, client.port + 1);
+        connect(client.host, client.portsys);
     }
 
     Client client;
@@ -73,7 +73,7 @@ public class ChangeUsername extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
 
-        jLabel1.setText("Username");
+        jLabel1.setText("New display name");
 
         jButton1.setText("Đổi");
         jButton1.addActionListener(new java.awt.event.ActionListener() {

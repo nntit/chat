@@ -30,12 +30,12 @@ public class AddChanel extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.client = (Client) parent;
-        connect(client.host, client.port + 1);
+        connect(client.host, client.portsys);
         if ("chanel".equals(client.ischanel)) {
             jLabel1.setText("Tên chanel muốn tạo");
             jButton1.setText("tạo");
         } else {
-            jLabel1.setText("Mail cần thêm");
+            jLabel1.setText("Username cần thêm");
             jButton1.setText("thêm");
         }
     }
@@ -149,7 +149,7 @@ public class AddChanel extends javax.swing.JDialog {
                             + "không có chứ @,\n"
                             + "và không có dấu '");
                 }
-            } else if (isValidEmailAddress(str)) {
+            } else if (str.length() >= 4 && str.length() <= 20 && (str.indexOf("@") < 0) && (str.indexOf("'") < 0) && (str.indexOf("'") < 0)) {
                 send("016-" + client.session + "@" + str);
                 String msg;
                 try {
@@ -168,7 +168,7 @@ public class AddChanel extends javax.swing.JDialog {
                     Logger.getLogger(ChangePassword.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Mail không đúng");
+                JOptionPane.showMessageDialog(this, "Username không đúng");
             }
         } else {
             JOptionPane.showMessageDialog(this, "Bạn chưa login");

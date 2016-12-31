@@ -148,6 +148,11 @@ public class ThreadServer extends Thread {
 
             @Override
             public String port() {
+                return log.port();
+            }
+
+            @Override
+            public String portsys() {
                 return log.portsys();
             }
 

@@ -61,9 +61,9 @@ public class ThreadsysClients extends Thread {
                     if (!db.isMailNull(body)) {
                         ssql = body;
                         sysold = code;
-                        send("000-000@");
+                        send("000-000@");//tc
                     } else {
-                        send("401-000@");
+                        send("401-000@");//0tc
                     }
                 } else if ("004".equals(code) && sysold.equals("003")) {
                     //004 - login = gui pass kiem tra
@@ -73,9 +73,9 @@ public class ThreadsysClients extends Thread {
                         String ss = db.ruuid();
                         ssql = "UPDATE user SET session='" + ss + "'WHERE id='" + temp + "'";
                         db.Update(ssql);
-                        send("000-000@" + ss);
+                        send("000-" + sys.port() + "@" + ss);//tc
                     } else {
-                        send("401-000@");
+                        send("401-000@");//tc
                     }
                 } else if ("007".equals(code)) {
                     //007 - doi ten
@@ -88,13 +88,14 @@ public class ThreadsysClients extends Thread {
                         }
                         String listuser = sys.ListUserInChanel();
                         if (!"".equals(listuser)) {
+                            //////////////////////////////////////////////////String id = db.user_session_to_id(session);
                             sys.SendAll("sys-006@" + listuser);
                         }
                     }
                     if (c == 1) {
-                        send("000-000@");
+                        send("000-000@");//tc
                     } else {
-                        send("401-000@");
+                        send("401-000@");//0tc
                     }
                 } else if ("008".equals(code)) {
                     //008 - doi pass
@@ -118,7 +119,7 @@ public class ThreadsysClients extends Thread {
                         send("401-000@");
                     }
                 } else if ("001".equals(code)) {
-                    //001 - tao id = gui mail kiem tra
+                    //001 - tao id = gui user kiem tra
                     sql db = new sql();
                     if (db.isMailNull(body)) {
                         sysold = code;
@@ -141,7 +142,7 @@ public class ThreadsysClients extends Thread {
                         send("401-000@");
                     }
                 } else if ("015".equals(code)) {
-                    //014 - tao chanel;
+                    //015 - tao chanel;
                     sysold = "";
                     sql db = new sql();
                     ssql = "INSERT INTO chanel VALUES ('" + ruuid() + "','" + body + "','" + db.user_session_to_id(session) + "')";
@@ -151,8 +152,9 @@ public class ThreadsysClients extends Thread {
                     } else {
                         send("401-000@");
                     }
+                    
                 } else if ("016".equals(code)) {
-                    //014 - thêm bạn;
+                    //016 - thêm bạn;
                     sysold = "";
                     sql db = new sql();
                     String f1 = db.user_session_to_id(session);
@@ -177,6 +179,9 @@ public class ThreadsysClients extends Thread {
                     } else {
                         send("403-000@");
                     }
+                } else if ("101".equals(code)) {
+                } else if ("102".equals(code)) {
+                } else if ("101".equals(code)) {
                 }
 
             } catch (IOException ex) {

@@ -369,9 +369,32 @@ public class sql {
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
             stmt = conn.createStatement();
 
-            ResultSet rs = stmt.executeQuery("SELECT msg.body FROM msg INNER JOIN msgold ON msg.chanel = msgold.chanel where msgold.user = '"+user+"' and msg.chanel = '"+chanel+"' and msg.time >= msgold.time ORDER BY msg.time ASC");
+            ResultSet rs = stmt.executeQuery("SELECT msg.body FROM msg INNER JOIN msgold ON msg.chanel = msgold.chanel where msgold.user = '" + user + "' and msg.chanel = '" + chanel + "' and msg.time >= msgold.time ORDER BY msg.time ASC");
             while (rs.next()) {
                 temp.add(rs.getString("body"));
+            }
+            stmt.close();
+            conn.close();
+            return temp;
+        } catch (Exception ex) {
+            System.out.println(ex);
+            return temp;
+        }
+    }
+
+    public Boolean xoachanel(String user, String chanel) {
+        Boolean temp = false;
+        try {
+            Connection conn = null;
+            Statement stmt = null;
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            stmt = conn.createStatement();
+
+            ResultSet rs = stmt.executeQuery("SELECT * FROM chanel WHERE id = '"+chanel+"' AND owner = '"+user+"'");
+            while (rs.next()) {
+                stmt.executeUpdate("DELETE FROM chanel WHERE id='" + chanel + "'");
+                temp = true;
             }
             stmt.close();
             conn.close();

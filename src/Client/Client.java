@@ -26,6 +26,7 @@ public class Client extends javax.swing.JFrame {
     public DataInputStream in = null;
     public Socket sk = null;
     public int port = -1;
+    public int portsys = -1;
     public String host = null;
 
     /**
@@ -56,8 +57,8 @@ public class Client extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         txt_list_cl_fr = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
+        bt_file = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -119,13 +120,17 @@ public class Client extends javax.swing.JFrame {
             }
         });
 
-        jButton4.setText("S");
-        jButton4.setToolTipText("Setting");
-
         jButton5.setText("Clear msg");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton5ActionPerformed(evt);
+            }
+        });
+
+        bt_file.setText("File in chanel");
+        bt_file.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_fileActionPerformed(evt);
             }
         });
 
@@ -143,7 +148,7 @@ public class Client extends javax.swing.JFrame {
 
         jMenu2.setText("Chức năng");
 
-        jMenuItem2.setText("Đổi username");
+        jMenuItem2.setText("Đổi display name");
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem2ActionPerformed(evt);
@@ -173,11 +178,9 @@ public class Client extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jButton2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jButton3))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(txt_list_cl_fr, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(txt_list_cl_fr, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -189,9 +192,10 @@ public class Client extends javax.swing.JFrame {
                         .addComponent(jButton5)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel2)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
+                    .addComponent(bt_file, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -213,7 +217,7 @@ public class Client extends javax.swing.JFrame {
                     .addComponent(jButton1)
                     .addComponent(jButton2)
                     .addComponent(jButton3)
-                    .addComponent(jButton4))
+                    .addComponent(bt_file))
                 .addContainerGap())
         );
 
@@ -319,27 +323,42 @@ public class Client extends javax.swing.JFrame {
     }//GEN-LAST:event_li_chanelValueChanged
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        /*if ("chanel".equals(ischanel)) {
+        if ("chanel".equals(ischanel)) {
             int a = li_chanel.getSelectedIndex();
             if (a < 0) {
             } else {
-                int dialogResult = JOptionPane.showConfirmDialog(null, "Bạn có muốn xóa kênh này không", "Warning", JOptionPane.YES_NO_OPTION);
+                int dialogResult = JOptionPane.showConfirmDialog(null, "Bạn có muốn xóa kênh \"" + li_chanel.getSelectedValue() + "\" không", "Warning", JOptionPane.YES_NO_OPTION);
                 if (dialogResult == JOptionPane.YES_OPTION) {
-                    System.out.println("YES_OPTION");
+                    String str = listchanel.get(a);
+                    send("sys-021@" + str);
                 }
             }
         } else {
+            int a = li_chanel.getSelectedIndex();
+            if (a < 0) {
+            } else {
+                int dialogResult = JOptionPane.showConfirmDialog(null, "Bạn có muốn xóa \"" + li_chanel.getSelectedValue() + "\" không", "Warning", JOptionPane.YES_NO_OPTION);
+                if (dialogResult == JOptionPane.YES_OPTION) {
+                    String str = listchanel.get(a);
+                    send("sys-020@" + str);
+                }
+            }
         }
         if (ischanel == "chanel") {
             send("sys-010@");
         } else {
             send("sys-013@");
-        }*/
+        }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         txt_msg.setText("");
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void bt_fileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_fileActionPerformed
+        file ch = new file();
+        ch.setVisible(true);
+    }//GEN-LAST:event_bt_fileActionPerformed
 
     public void connect(String host, int port) {
         try {
@@ -397,31 +416,35 @@ public class Client extends javax.swing.JFrame {
                                 }
                                 li_user.setModel(listModel);
                             } else if ("011".equals(code)) {
-                                DefaultListModel listModel = new DefaultListModel();
-                                li_user.setModel(new DefaultListModel());
-                                if (!"".equals(body)) {
-                                    String[] auser = body.split("@@@");
-                                    listchanel.clear();
-                                    for (String user : auser) {
-                                        String[] ausers = user.split("@@");
-                                        listModel.addElement(ausers[0]);
-                                        listchanel.add(ausers[1]);
+                                if ("chanel".equals(ischanel)) {
+                                    DefaultListModel listModel = new DefaultListModel();
+                                    li_user.setModel(new DefaultListModel());
+                                    if (!"".equals(body)) {
+                                        String[] auser = body.split("@@@");
+                                        listchanel.clear();
+                                        for (String user : auser) {
+                                            String[] ausers = user.split("@@");
+                                            listModel.addElement(ausers[0]);
+                                            listchanel.add(ausers[1]);
+                                        }
                                     }
+                                    li_chanel.setModel(listModel);
                                 }
-                                li_chanel.setModel(listModel);
                             } else if ("014".equals(code)) {
-                                DefaultListModel listModel = new DefaultListModel();
-                                li_user.setModel(new DefaultListModel());
-                                if (!"".equals(body)) {
-                                    String[] auser = body.split("@@@");
-                                    listchanel.clear();
-                                    for (String user : auser) {
-                                        String[] ausers = user.split("@@");
-                                        listModel.addElement(ausers[0]);
-                                        listchanel.add(ausers[1]);
+                                if (!"chanel".equals(ischanel)) {
+                                    DefaultListModel listModel = new DefaultListModel();
+                                    li_user.setModel(new DefaultListModel());
+                                    if (!"".equals(body)) {
+                                        String[] auser = body.split("@@@");
+                                        listchanel.clear();
+                                        for (String user : auser) {
+                                            String[] ausers = user.split("@@");
+                                            listModel.addElement(ausers[0]);
+                                            listchanel.add(ausers[1]);
+                                        }
                                     }
+                                    li_chanel.setModel(listModel);
                                 }
-                                li_chanel.setModel(listModel);
                             } else if ("018".equals(code)) {
                                 String[] a = body.split("@@@");
                                 int dialogResult = JOptionPane.showConfirmDialog(null, "Bạn " + a[1] + " muốn kết bạn với bạn.\nBạn có đồng ý không?", "Warning", JOptionPane.YES_NO_OPTION);
@@ -479,10 +502,10 @@ public class Client extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bt_file;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;

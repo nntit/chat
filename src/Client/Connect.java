@@ -22,16 +22,15 @@ public class Connect extends javax.swing.JDialog {
     /**
      * Creates new form Connect
      */
-    
     public DataOutputStream out = null;
     public DataInputStream in = null;
     public Socket sk = null;
-    
+
     public Connect(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         this.client = (Client) parent;
-        connect(txt_host.getText(),Integer.parseInt(txt_port.getText()) + 1);
+        connect(txt_host.getText(), Integer.parseInt(txt_port.getText()));
     }
 
     Client client;
@@ -55,6 +54,7 @@ public class Connect extends javax.swing.JDialog {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -78,6 +78,10 @@ public class Connect extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
+
+        txt_pass.setText("123");
+
+        txt_mail.setText("nnt1289@live.com");
 
         jButton1.setText("Đóng");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -108,7 +112,7 @@ public class Connect extends javax.swing.JDialog {
 
         txt_port.setText("6000");
 
-        jLabel3.setText("Email");
+        jLabel3.setText("Username");
 
         jLabel4.setText("Password");
 
@@ -176,8 +180,8 @@ public class Connect extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void txt_dnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_dnActionPerformed
-        client.connect(txt_host.getText(), Integer.parseInt(txt_port.getText()));
-        if (isValidEmailAddress(txt_mail.getText())) {
+        String str = txt_mail.getText();
+        if (str.length() >= 4 && str.length() <= 20 && (str.indexOf("@") < 0) && (str.indexOf("'") < 0) && (str.indexOf("'") < 0)) {
             try {
                 send("003-000@" + txt_mail.getText());
                 String msg = in.readUTF();
@@ -189,13 +193,16 @@ public class Connect extends javax.swing.JDialog {
                     msg = in.readUTF();
                     title = msg.substring(0, msg.indexOf("@"));
                     String body = msg.substring(msg.indexOf("@") + 1);
-                    if ("000-000".equals(title)) {
+                    if ("000".equals(msg.substring(0, 3))) {
                         client.login = true;
                         client.session = body;
                         client.port = Integer.parseInt(txt_port.getText());
                         JOptionPane.showMessageDialog(this, "đăng nhập thành công");
                         client.maillogin = txt_mail.getText().trim();
                         this.dispose();
+                        client.portsys = Integer.valueOf(txt_port.getText());
+                        client.port = Integer.valueOf(msg.substring(4, msg.indexOf("@")));
+                        client.connect(txt_host.getText(), client.port);
                     } else {
                         JOptionPane.showMessageDialog(this, "đăng nhập ko thành công");
                     }
@@ -206,7 +213,10 @@ public class Connect extends javax.swing.JDialog {
                 Logger.getLogger(Connect.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Email không đúng");
+            JOptionPane.showMessageDialog(this, "Username phải lớn hơn 3,\n"
+                    + "nhỏ hơn hoặc bằng 20,\n"
+                    + "không có chứ @,\n"
+                    + "và không có dấu '");
         }
     }//GEN-LAST:event_txt_dnActionPerformed
 
@@ -218,7 +228,8 @@ public class Connect extends javax.swing.JDialog {
     }
 
     private void bt_dkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_dkActionPerformed
-        if (isValidEmailAddress(txt_mail.getText())) {
+        String str = txt_mail.getText();
+        if (str.length() >= 4 && str.length() <= 20 && (str.indexOf("@") < 0) && (str.indexOf("'") < 0) && (str.indexOf("'") < 0)) {
             try {
                 send("001-000@" + txt_mail.getText());
                 String msg = in.readUTF();
@@ -241,7 +252,10 @@ public class Connect extends javax.swing.JDialog {
                 Logger.getLogger(Connect.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Email không đúng");
+            JOptionPane.showMessageDialog(this, "Username phải lớn hơn 3,\n"
+                    + "nhỏ hơn hoặc bằng 20,\n"
+                    + "không có chứ @,\n"
+                    + "và không có dấu '");
         }
     }//GEN-LAST:event_bt_dkActionPerformed
 

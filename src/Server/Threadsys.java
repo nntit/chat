@@ -29,7 +29,7 @@ public class Threadsys extends Thread {
     @Override
     public void run() {
         try {
-            ServerSocket ssocket = new ServerSocket(Integer.parseInt(sys.port()));
+            ServerSocket ssocket = new ServerSocket(Integer.parseInt(sys.portsys()));
             sys.Log("sys start ...");
             while (true) {
                 Socket client = ssocket.accept();

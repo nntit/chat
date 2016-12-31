@@ -30,7 +30,7 @@ public class ChangePassword extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.client = (Client) parent;
-        connect(client.host, client.port + 1);
+        connect(client.host, client.portsys);
     }
 
     Client client;

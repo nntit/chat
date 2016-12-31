@@ -120,7 +120,7 @@ public class ThreadClients extends Thread {
                             sql db = new sql();
                             ArrayList<String> as = db.listmsgchuaxem(islogin, ischanel);
                             for (String a : as) {
-                                send("msg-000@"+a);
+                                send("msg-000@" + a);
                             }
                             DaXem(islogin, ischanel);
                         }// 017 - xin thu moi friend
@@ -134,6 +134,7 @@ public class ThreadClients extends Thread {
                                 send("sys-018@" + str);
                             }
                         } else if ("019".equals(code)) {
+                            //quyen dinh ket friend
                             sql db = new sql();
                             String[] a = body.split("@@@");
                             if ("1".equals(a[1])) {
@@ -146,6 +147,55 @@ public class ThreadClients extends Thread {
                             } else {
                                 db.Update("DELETE FROM friend WHERE f1='" + a[0] + "' and f2 ='" + islogin + "'");
                             }
+                        } else if ("020".equals(code)) {
+                            //xoa ban
+                            sql db = new sql();
+                            db.Update("DELETE FROM friend WHERE f1='" + islogin + "' and f2 ='" + body + "'");
+                            db.Update("DELETE FROM friend WHERE f1='" + body + "' and f2 ='" + islogin + "'");
+                            String temp = "";
+                            ArrayList<friend> cls = new ArrayList<>();
+                            cls = db.listfriend(islogin);
+                            int b = 0;
+                            for (friend cl : cls) {
+                                if (b == 0) {
+                                    temp += db.username(cl.getR2()) + "@@" + cl.getId();
+                                    b++;
+                                } else {
+                                    temp += "@@@" + db.username(cl.getR2()) + "@@" + cl.getId();
+                                }
+                            }
+                            server.SendToUser("sys-014@" + temp, islogin);
+                            
+                            cls = db.listfriend(body);
+                            b = 0;
+                            for (friend cl : cls) {
+                                if (b == 0) {
+                                    temp += db.username(cl.getR2()) + "@@" + cl.getId();
+                                    b++;
+                                } else {
+                                    temp += "@@@" + db.username(cl.getR2()) + "@@" + cl.getId();
+                                }
+                            }
+                            server.SendToUser("sys-014@" + temp, body);
+                        } else if ("021".equals(code)) {
+                            //xoa chanel
+                            sql db = new sql();
+                            db.xoachanel(islogin, body);
+                            ArrayList<chanel> cls = new ArrayList<>();
+                            cls = db.listchanel();
+                            int b = 0;
+                            String temp = "";
+                            for (chanel cl : cls) {
+                                if (b == 0) {
+                                    temp += cl.getName() + "@@" + cl.getId();
+                                    b++;
+                                } else {
+                                    temp += "@@@" + cl.getName() + "@@" + cl.getId();
+                                }
+                            }
+                            server.SendAll("sys-011@" + temp);
+                        } else if ("020".equals(code)) {
+
                         }
                     }
                 } else if ("msg".equals(msg.substring(0, 3)) && !islogin.equals("")) {

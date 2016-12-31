@@ -21,5 +21,7 @@ public interface ISys {
 
     public String port();
 
+    public String portsys();
+
     public String ListUserInChanel();
 }
