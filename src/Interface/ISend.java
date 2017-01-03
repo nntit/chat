@@ -21,7 +21,9 @@ public interface ISend {
     
     public void Remove(ThreadClients tc);
 
-    public String ListUserInChanel();
+    public String ListUserInserver();
 
     public String ListUserInChanel(String to);
+    
+    public String List_Friend(String to);
 }

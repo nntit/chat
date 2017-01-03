@@ -391,7 +391,7 @@ public class sql {
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
             stmt = conn.createStatement();
 
-            ResultSet rs = stmt.executeQuery("SELECT * FROM chanel WHERE id = '"+chanel+"' AND owner = '"+user+"'");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM chanel WHERE id = '" + chanel + "' AND owner = '" + user + "'");
             while (rs.next()) {
                 stmt.executeUpdate("DELETE FROM chanel WHERE id='" + chanel + "'");
                 temp = true;
@@ -404,6 +404,30 @@ public class sql {
             return temp;
         }
     }
+
+    public ArrayList<friend> id_to_idfiend(String user, String idf) {
+        ArrayList<friend> temp = new ArrayList<>();
+        try {
+            Connection conn = null;
+            Statement stmt = null;
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            stmt = conn.createStatement();
+
+            ResultSet rs = stmt.executeQuery("SELECT * FROM friend where f1 = '" + user + "' and id ='"+idf+"'");
+            while (rs.next()) {
+                friend cl = new friend(rs.getString("id"), rs.getString("f1"), rs.getString("f2"), Integer.parseInt(rs.getString("Status")));
+                temp.add(cl);
+            }
+            stmt.close();
+            conn.close();
+            return temp;
+        } catch (Exception ex) {
+            System.out.println(ex);
+            return temp;
+        }
+    }
+
 
     /*
     while(rs.next()){

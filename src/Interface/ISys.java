@@ -23,5 +23,9 @@ public interface ISys {
 
     public String portsys();
 
-    public String ListUserInChanel();
+    public String ListUsersInserver();
+    
+    public String Session_to_chanel(String ss);
+    
+    public String ListUserInChanel(String to);
 }

@@ -30,8 +30,9 @@ public class ThreadClients extends Thread {
     private DataInputStream in = null;
     private ISend server = null;
     private ILog log = null;
-    public String islogin = "";
-    public String ischanel = "";
+    public String islogin = "";//id
+    public String ischanel = "";//id
+    public String isss = "";//id
 
     public ThreadClients(ISend server, Socket sk, ILog log) {
         try {
@@ -60,12 +61,16 @@ public class ThreadClients extends Thread {
                 String body = msg.substring(msg.indexOf("@") + 1);
                 String title = msg.substring(0, msg.indexOf("@"));
                 if ("sys".equals(msg.substring(0, 3))) {
+                    //dang nhap                     
                     if ("012".equals(code)) {
                         sql db = new sql();
+                        isss = body;
                         String id = db.user_session_to_id(body);
                         if (id != null) {
                             islogin = id;
                         }
+                        
+                        load_list_friend_to_all();
                     }
                     if (!islogin.equals("")) {
                         //005 - yeu cau list user
@@ -95,19 +100,9 @@ public class ThreadClients extends Thread {
                         } // 013 - xin list friend
                         // 014 - send list friend
                         else if ("013".equals(code)) {
-                            String temp = "";
                             ArrayList<friend> cls = new ArrayList<>();
                             sql db = new sql();
-                            cls = db.listfriend(islogin);
-                            int b = 0;
-                            for (friend cl : cls) {
-                                if (b == 0) {
-                                    temp += db.username(cl.getR2()) + "@@" + cl.getId();
-                                    b++;
-                                } else {
-                                    temp += "@@@" + db.username(cl.getR2()) + "@@" + cl.getId();
-                                }
-                            }
+                            String temp = server.List_Friend(islogin);
                             send("sys-014@" + temp);
                         } //016 - ischanel;
                         else if ("016".equals(code)) {
@@ -123,6 +118,7 @@ public class ThreadClients extends Thread {
                                 send("msg-000@" + a);
                             }
                             DaXem(islogin, ischanel);
+                            DaXem(islogin, old);
                         }// 017 - xin thu moi friend
                         // 018 - send thu moi friend
                         else if ("017".equals(code)) {
@@ -152,30 +148,10 @@ public class ThreadClients extends Thread {
                             sql db = new sql();
                             db.Update("DELETE FROM friend WHERE f1='" + islogin + "' and f2 ='" + body + "'");
                             db.Update("DELETE FROM friend WHERE f1='" + body + "' and f2 ='" + islogin + "'");
-                            String temp = "";
-                            ArrayList<friend> cls = new ArrayList<>();
-                            cls = db.listfriend(islogin);
-                            int b = 0;
-                            for (friend cl : cls) {
-                                if (b == 0) {
-                                    temp += db.username(cl.getR2()) + "@@" + cl.getId();
-                                    b++;
-                                } else {
-                                    temp += "@@@" + db.username(cl.getR2()) + "@@" + cl.getId();
-                                }
-                            }
+                            String temp = server.List_Friend(islogin);
                             server.SendToUser("sys-014@" + temp, islogin);
-                            
-                            cls = db.listfriend(body);
-                            b = 0;
-                            for (friend cl : cls) {
-                                if (b == 0) {
-                                    temp += db.username(cl.getR2()) + "@@" + cl.getId();
-                                    b++;
-                                } else {
-                                    temp += "@@@" + db.username(cl.getR2()) + "@@" + cl.getId();
-                                }
-                            }
+
+                            temp = server.List_Friend(body);
                             server.SendToUser("sys-014@" + temp, body);
                         } else if ("021".equals(code)) {
                             //xoa chanel
@@ -214,19 +190,38 @@ public class ThreadClients extends Thread {
                     send("sys-500@");
                 }
             } catch (IOException ex) {
-                Logger.getLogger(ThreadClients.class.getName()).log(Level.SEVERE, null, ex);
+                //Logger.getLogger(ThreadClients.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("1 user out");
                 try {
                     server.Remove(this);
-                    String listuser = server.ListUserInChanel();
+                    String listuser = server.ListUserInChanel(ischanel);
                     if (!"".equals(listuser)) {
-                        server.SendAll("sys-006@" + listuser);
+                        server.SendToChanel("sys-006@" + listuser, ischanel);
+                        server.SendToChanel("sys-006@" + listuser, islogin);
                     }
+                    load_list_friend_to_all();
                     this.join();
                 } catch (InterruptedException ex1) {
                     Logger.getLogger(ThreadClients.class.getName()).log(Level.SEVERE, null, ex1);
                 }
             }
 
+        }
+    }
+
+    public void load_list_friend_to_all() {
+        String f = server.List_Friend(islogin);
+        String[] arf = f.split("@@@");
+        for (String string : arf) {
+            String[] str = string.split("@@");
+            if ("on".equals(str[2])) {
+                sql db = new sql();
+                ArrayList<friend> Arrayfiend = db.id_to_idfiend(islogin, str[1]);
+                for (friend object : Arrayfiend) {
+                    String temp = server.List_Friend(object.getR2());
+                    server.SendToUser("sys-014@" + temp, object.getR2());
+                }
+            }
         }
     }
 

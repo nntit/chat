@@ -248,7 +248,7 @@ public class Client extends javax.swing.JFrame {
             ThreadClient();
             a++;
         } else {
-            send("sys-012@" + session);
+            send("sys-012@" + session);//send ss dang nhap lai
         }
         this.setTitle(maillogin);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
@@ -379,14 +379,14 @@ public class Client extends javax.swing.JFrame {
             @Override
             public void run() {
 
-                send("sys-012@" + session);
+                send("sys-012@" + session); //send dang nhap
 
-                send("sys-017@");
+                send("sys-017@"); //xin thu moi
 
                 if (ischanel == "chanel") {
-                    send("sys-010@");
+                    send("sys-010@"); //xin list chanel
                 } else {
-                    send("sys-013@");
+                    send("sys-013@"); //xin list friend
                 }
 
                 while (true) {
@@ -394,20 +394,20 @@ public class Client extends javax.swing.JFrame {
                     String msg;
                     try {
                         msg = in.readUTF();
-                        String code = msg.substring(4, msg.indexOf("@"));
-                        String body = msg.substring(msg.indexOf("@") + 1);
-                        String title = msg.substring(0, msg.indexOf("@"));
+                        String code = msg.substring(4, msg.indexOf("@")); //
+                        String body = msg.substring(msg.indexOf("@") + 1);// su li du lieu nhan
+                        String title = msg.substring(0, msg.indexOf("@"));//
                         if ("msg".equals(msg.substring(0, 3))) {
-                            txt_msg.append(body + "\n");
+                            txt_msg.append(body + "\n");//neu la tin nhan
                             txt_msg.setCaretPosition(txt_msg.getDocument().getLength());
-                        } else if ("sys".equals(msg.substring(0, 3))) {
-                            if ("500".equals(code)) {
+                        } else if ("sys".equals(msg.substring(0, 3))) {//neu la tin he thong
+                            if ("500".equals(code)) {//lỗi chưa dang nhap
                                 txt_msg.append("System: Bạn chưa đăng nhập" + "\n");
                                 txt_msg.setCaretPosition(txt_msg.getDocument().getLength());
-                            } else if ("501".equals(code)) {
+                            } else if ("501".equals(code)) {//lỗi chưa chọn chanel
                                 txt_msg.append("System: Bạn chưa chọn chanel" + "\n");
                                 txt_msg.setCaretPosition(txt_msg.getDocument().getLength());
-                            } else if ("006".equals(code)) {
+                            } else if ("006".equals(code)) { //nhan list user in chanel
                                 DefaultListModel listModel = new DefaultListModel();
                                 String[] auser = body.split("@@@");
 
@@ -415,7 +415,7 @@ public class Client extends javax.swing.JFrame {
                                     listModel.addElement(user);
                                 }
                                 li_user.setModel(listModel);
-                            } else if ("011".equals(code)) {
+                            } else if ("011".equals(code)) {//nhan list chanel
                                 if ("chanel".equals(ischanel)) {
                                     DefaultListModel listModel = new DefaultListModel();
                                     li_user.setModel(new DefaultListModel());
@@ -430,7 +430,7 @@ public class Client extends javax.swing.JFrame {
                                     }
                                     li_chanel.setModel(listModel);
                                 }
-                            } else if ("014".equals(code)) {
+                            } else if ("014".equals(code)) {//nhan list friend
                                 if (!"chanel".equals(ischanel)) {
                                     DefaultListModel listModel = new DefaultListModel();
                                     li_user.setModel(new DefaultListModel());
@@ -439,19 +439,19 @@ public class Client extends javax.swing.JFrame {
                                         listchanel.clear();
                                         for (String user : auser) {
                                             String[] ausers = user.split("@@");
-                                            listModel.addElement(ausers[0]);
+                                            listModel.addElement(ausers[0] + "("+ausers[2]+")");
                                             listchanel.add(ausers[1]);
                                         }
                                     }
                                     li_chanel.setModel(listModel);
                                 }
-                            } else if ("018".equals(code)) {
+                            } else if ("018".equals(code)) {//nhan thu moi kêt ban
                                 String[] a = body.split("@@@");
                                 int dialogResult = JOptionPane.showConfirmDialog(null, "Bạn " + a[1] + " muốn kết bạn với bạn.\nBạn có đồng ý không?", "Warning", JOptionPane.YES_NO_OPTION);
                                 if (dialogResult == JOptionPane.YES_OPTION) {
-                                    send("sys-019@" + a[0] + "@@@1");
+                                    send("sys-019@" + a[0] + "@@@1");//có
                                 } else {
-                                    send("sys-019@" + a[0] + "@@@0");
+                                    send("sys-019@" + a[0] + "@@@0");//không
                                 }
                             }
                         }

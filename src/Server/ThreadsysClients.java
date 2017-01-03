@@ -86,10 +86,11 @@ public class ThreadsysClients extends Thread {
                         if (db.Update(ssql) != -1) {
                             c = 1;
                         }
-                        String listuser = sys.ListUserInChanel();
+                        String cn = sys.Session_to_chanel(session);
+                        String listuser = sys.ListUserInChanel(cn);
                         if (!"".equals(listuser)) {
-                            //////////////////////////////////////////////////String id = db.user_session_to_id(session);
-                            sys.SendAll("sys-006@" + listuser);
+                            sys.SendToChanel("sys-006@" + listuser, cn);
+
                         }
                     }
                     if (c == 1) {
@@ -152,7 +153,7 @@ public class ThreadsysClients extends Thread {
                     } else {
                         send("401-000@");
                     }
-                    
+
                 } else if ("016".equals(code)) {
                     //016 - thêm bạn;
                     sysold = "";

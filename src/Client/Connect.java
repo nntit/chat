@@ -30,7 +30,6 @@ public class Connect extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.client = (Client) parent;
-        connect(txt_host.getText(), Integer.parseInt(txt_port.getText()));
     }
 
     Client client;
@@ -180,6 +179,7 @@ public class Connect extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void txt_dnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_dnActionPerformed
+        connect(txt_host.getText(), Integer.parseInt(txt_port.getText()));
         String str = txt_mail.getText();
         if (str.length() >= 4 && str.length() <= 20 && (str.indexOf("@") < 0) && (str.indexOf("'") < 0) && (str.indexOf("'") < 0)) {
             try {
@@ -228,6 +228,7 @@ public class Connect extends javax.swing.JDialog {
     }
 
     private void bt_dkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_dkActionPerformed
+        connect(txt_host.getText(), Integer.parseInt(txt_port.getText()));
         String str = txt_mail.getText();
         if (str.length() >= 4 && str.length() <= 20 && (str.indexOf("@") < 0) && (str.indexOf("'") < 0) && (str.indexOf("'") < 0)) {
             try {
