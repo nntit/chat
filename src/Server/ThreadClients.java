@@ -113,6 +113,7 @@ public class ThreadClients extends Thread {
                             String listusernew = server.ListUserInChanel(body);
                             server.SendToChanel("sys-006@" + listusernew, body);
                             sql db = new sql();
+                            //tin nhan cu
                             ArrayList<String> as = db.listmsgchuaxem(islogin, ischanel);
                             for (String a : as) {
                                 send("msg-000@" + a);

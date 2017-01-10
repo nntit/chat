@@ -155,11 +155,12 @@ public class ThreadServer extends Thread {
                     break;
                 }
             }
+            ArrayList<String> lmc = db.listmsgchuaxem(id,cl.getId());
             if (b == 0) {
-                temp += db.username(cl.getR2()) + "@@" + cl.getId() + "@@" + on;
+                temp += db.username(cl.getR2()) + "@@" + cl.getId() + "@@" + on + "@@" + lmc.size();
                 b++;
             } else {
-                temp += "@@@" + db.username(cl.getR2()) + "@@" + cl.getId() + "@@" + on;
+                temp += "@@@" + db.username(cl.getR2()) + "@@" + cl.getId() + "@@" + on + "@@" + lmc.size();
             }
         }
         return temp;

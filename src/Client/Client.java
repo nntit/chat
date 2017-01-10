@@ -439,7 +439,11 @@ public class Client extends javax.swing.JFrame {
                                         listchanel.clear();
                                         for (String user : auser) {
                                             String[] ausers = user.split("@@");
-                                            listModel.addElement(ausers[0] + "("+ausers[2]+")");
+                                            String temp = "";
+                                            if (Integer.parseInt(ausers[3])>0) {
+                                                temp = "("+ausers[3]+")";
+                                            }
+                                            listModel.addElement(ausers[0] + "("+ausers[2]+")"+temp);
                                             listchanel.add(ausers[1]);
                                         }
                                     }
